@@ -1,71 +1,70 @@
 # Product Management System
 
-A simple product management system built using HTML, CSS, and JavaScript. This system allows users to add, edit, delete, and search for products. All data is stored locally in the browser using `localStorage`.
+A framework-free inventory and pricing dashboard built with **vanilla HTML, CSS and JavaScript**. Create, edit, search and price products; everything persists in the browser with `localStorage`.
+
+**[Live demo →](https://montaser-hub.github.io/product-management-system/)**
+
+![Product Management System — light theme](docs/preview-light.webp)
+
+<details>
+<summary>Dark theme &amp; mobile</summary>
+
+![Dark theme](docs/preview-dark.webp)
+
+<img src="docs/preview-mobile.webp" alt="Mobile layout" width="320" />
+
+</details>
 
 ## Features
-- Add new products with details like title, price, taxes, discount, and category.
-- Edit and delete products.
-- Search products by title or category.
-- Toggle between light and dark themes.
-  
-## Project View  
-🔗 [Live Demo](https://montaser-hub.github.io/Web_Design/Product_Management_System/crud.html)
 
+- **Full CRUD**: create, edit, and delete products, or clear them all (with a confirmation step)
+- **Live pricing**: the unit total (`price + taxes + ads − discount`) updates as you type, with validation that stops a discount exceeding the price
+- **Inventory stats**: product count, units in stock, total inventory value and number of categories, all recalculated on every change
+- **Search**: filter by title or category with a debounced search box and a segmented toggle
+- **Category suggestions**: the category field autocompletes from categories you've already used
+- **Light/dark theme**: follows your system setting on first visit, then remembers your choice, with no flash of the wrong theme on load
+- **Sample data**: the first visit loads a realistic sample inventory, and it can be restored at any time
+- **Responsive**: a two-column dashboard on desktop and a stacked layout on mobile, where the table scrolls on its own
+- **Accessible**: every field has a label, validation errors are announced to screen readers, and the whole app works from the keyboard with visible focus
 
-## Installation
+## Implementation notes
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/yourrepository.git
-Open index.html in your browser to start using the product management system.
-How to Use
-Add a New Product: Fill in the form fields and click Create to add a product.
-Edit a Product: Click the Edit button next to a product in the list to modify its details.
-Delete a Product: Click the Delete button next to a product to remove it from the list.
-Search Products: Use the search bar to find products by title or category.
-Technologies Used
-HTML
-CSS
-JavaScript
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+| Concern | Approach |
+| --- | --- |
+| Row identity | Each product has a stable `id` (`crypto.randomUUID`), so edit and delete act on the right product even while the list is filtered |
+| XSS safety | All user input is HTML-escaped before rendering |
+| Events | A single delegated click listener on the table body instead of inline `onclick` handlers |
+| Data model | One record per product with a `quantity` field; totals are derived, never stored |
+| Storage | Namespaced `localStorage` keys, wrapped so the app still runs when storage is unavailable (e.g. some private-browsing modes) |
+| Formatting | `Intl.NumberFormat` for currency and numbers |
 
+## Run locally
 
-## Recommendations for Using This Project
-### Best Use Cases:
+No build step or dependencies are needed:
 
-Small businesses or personal projects for product management.
-Learning CRUD operations using vanilla JavaScript.
-Practicing front-end development, including DOM manipulation and localStorage.
-Technical Recommendations:
+```bash
+git clone https://github.com/montaser-hub/product-management-system.git
+cd product-management-system
+python3 -m http.server 8000   # or: npx serve
+```
 
-Use the latest version of modern browsers like Chrome, Firefox, or Edge for the best experience.
-Regularly clear browser cache and localStorage if product records accumulate over time.
-Challenges You May Encounter
-Data Persistence:
+Then open http://localhost:8000.
 
-### Challenge: Data is stored only in localStorage, meaning it resets if the user clears browser data.
-Solution: Connect to a backend database like Firebase or a custom API.
-Limited Security:
+## Project structure
 
-### Challenge: No authentication or access control exists.
-Solution: Implement user authentication and authorization for enhanced security.
-Single-Device Use:
+```
+index.html   Markup and the inline theme bootstrap
+styles.css   Design tokens (light/dark) and the responsive layout
+main.js      State, validation, rendering and persistence
+docs/        README screenshots
+```
 
-### Challenge: Data is tied to the local browser and not accessible across devices.
-Solution: Use cloud storage or a server-side database.
-Scalability:
+## Possible extensions
 
-### Challenge: The app may struggle with performance if the number of products becomes very large.
-Solution: Implement pagination or switch to a more robust data management system.
-No Offline Support:
+- Sync to a backend (REST API or Firebase) for multi-device use
+- Sortable columns and pagination for large inventories
+- CSV import and export
 
-### Challenge: The app does not support offline-first functionality.
-Solution: Consider using service workers to enable offline capabilities.
+## License
 
-## Limitations: What It Cannot Do
-### Server-Side Operations: No backend integration for secure data storage or advanced processing.
-### Data Export/Import: No export or import functionality for product data.
-### Multi-User Access: No real-time multi-user synchronization.
-### Advanced UI/UX: Limited to a simple, functional interface.
-### Mobile Optimization: Although responsive, further optimization might be needed for complex layouts.
+[MIT](LICENSE) © Montaser Ismail
